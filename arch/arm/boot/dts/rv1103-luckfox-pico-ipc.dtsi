@@ -316,22 +316,23 @@
 	#address-cells = <1>;
 	#size-cells = <0>;
 
-	spidev@0 {
-		compatible = "rockchip,spidev";
-		spi-max-frequency = <50000000>;
-		reg = <0>;
-	};
-	fbtft@0 {
-		compatible = "sitronix,st7789v";
-		reg = <0>;
-		spi-max-frequency = <20000000>;
-		fps = <30>;
-		buswidth = <8>;
-		debug = <0x7>;
-		led-gpios = <&gpio0 RK_PA4 GPIO_ACTIVE_HIGH>;//BL
-		dc-gpios = <&gpio1 RK_PA2 GPIO_ACTIVE_HIGH>;//DC
-		reset-gpios = <&gpio1 RK_PC3 GPIO_ACTIVE_LOW>;//RES
-	};
+	// spidev@0 {
+	// 	compatible = "rockchip,spidev";
+	// 	spi-max-frequency = <50000000>;
+	// 	reg = <0>;
+	// };
+
+	// fbtft@0 {
+	// 	compatible = "sitronix,st7789v";
+	// 	reg = <0>;
+	// 	spi-max-frequency = <20000000>;
+	// 	fps = <30>;
+	// 	buswidth = <8>;
+	// 	debug = <0x7>;
+	// 	led-gpios = <&gpio0 RK_PA4 GPIO_ACTIVE_HIGH>;//BL
+	// 	dc-gpios = <&gpio1 RK_PA2 GPIO_ACTIVE_HIGH>;//DC
+	// 	reset-gpios = <&gpio1 RK_PC3 GPIO_ACTIVE_LOW>;//RES
+	// };
 };
 // I2C
 &i2c3 {

@@ -17,6 +17,8 @@ obj-$(CONFIG_FB_TFT_ILI9340)     += fb_ili9340.o
 obj-$(CONFIG_FB_TFT_ILI9341)     += fb_ili9341.o
 obj-$(CONFIG_FB_TFT_ILI9481)     += fb_ili9481.o
 obj-$(CONFIG_FB_TFT_ILI9486)     += fb_ili9486.o
+obj-$(CONFIG_FB_TFT_ILI9488)	 += fb_ili9488.o
+
 obj-$(CONFIG_FB_TFT_PCD8544)     += fb_pcd8544.o
 obj-$(CONFIG_FB_TFT_RA8875)      += fb_ra8875.o
 obj-$(CONFIG_FB_TFT_S6D02A1)     += fb_s6d02a1.o
@@ -31,9 +33,13 @@ obj-$(CONFIG_FB_TFT_SSD1331)     += fb_ssd1331.o
 obj-$(CONFIG_FB_TFT_SSD1351)     += fb_ssd1351.o
 obj-$(CONFIG_FB_TFT_ST7735R)     += fb_st7735r.o
 obj-$(CONFIG_FB_TFT_ST7789V)     += fb_st7789v.o
+obj-$(CONFIG_FB_TFT_ST7796)      += fb_st7796.o
 obj-$(CONFIG_FB_TFT_TINYLCD)     += fb_tinylcd.o
 obj-$(CONFIG_FB_TFT_TLS8204)     += fb_tls8204.o
 obj-$(CONFIG_FB_TFT_UC1611)      += fb_uc1611.o
 obj-$(CONFIG_FB_TFT_UC1701)      += fb_uc1701.o
 obj-$(CONFIG_FB_TFT_UPD161704)   += fb_upd161704.o
 obj-$(CONFIG_FB_TFT_WATTEROTT)   += fb_watterott.o
+obj-$(CONFIG_FB_TFT_RM68140) 	 += fb_rm68140.o
+
+

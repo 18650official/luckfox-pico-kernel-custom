@@ -239,7 +239,7 @@ void __init arm_memblock_init(const struct machine_desc *mdesc)
 
 	/* reserve memory for DMA contiguous allocations */
 	dma_contiguous_reserve(arm_dma_limit);
-	rk_dma_heap_cma_setup();
+	// rk_dma_heap_cma_setup();
 
 	arm_memblock_steal_permitted = false;
 	memblock_dump_all();

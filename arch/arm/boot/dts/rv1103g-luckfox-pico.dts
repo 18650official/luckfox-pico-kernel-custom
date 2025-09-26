@@ -14,6 +14,7 @@
 	compatible = "rockchip,rv1103g-38x38-ipc-v10", "rockchip,rv1103";
 
 	gpio4pa4: gpio4pa4 {
+		status = "disabled";
 		compatible = "regulator-fixed";
 		pinctrl-names = "default";
 		pinctrl-0 = <&gpio4_pa4>;
@@ -30,6 +31,7 @@
 	};
 
 	gpio4pa2: gpio4pa2 {
+		status = "disabled";
 		compatible = "regulator-fixed";
 		pinctrl-names = "default";
 		pinctrl-0 = <&gpio4_pa2>;
@@ -88,6 +90,10 @@
 		gpio4_pb1: gpio4-pb1 {
 			rockchip,pins = <4 RK_PB1 RK_FUNC_GPIO &pcfg_pull_none>;
 		};
+
+		gpio1_pc6: gpio1-pc6 {
+   	 		rockchip,pins = <1 RK_PC6 RK_FUNC_GPIO &pcfg_pull_none>;
+		};
 	};
 };
 
@@ -118,13 +124,41 @@
 
 /**********SPI**********/
 /* SPI0_M0 */
+&pinctrl {
+    spi0 {
+        /omit-if-no-ref/
+        spi0m0_pins: spi0m0-pins {
+            rockchip,pins =
+                /* spi0_clk_m0 */
+                <1 RK_PC1 4 &pcfg_pull_none>,
+                /* spie_miso_m0 */
+                <1 RK_PC3 6 &pcfg_pull_none>,
+                /* spi_mosi_m0 */
+                <1 RK_PC2 6 &pcfg_pull_none>;
+        };
+    };
+};
+
 &spi0 {
-	status = "disabled";
-	spidev@0 {
-		spi-max-frequency = <50000000>;
-	};
-	fbtft@0 {
-		spi-max-frequency = <50000000>;
+	status = "okay";
+	pinctrl-names = "default";
+	pinctrl-0 = <&spi0m0_cs0 &spi0m0_pins>;
+
+	st7796:st7796@0 {
+		status = "okay";
+		compatible = "ilitek,ili9488";
+		reg = <0>;
+		spi-max-frequency = <40000000>;
+		fps = <30>;
+		buswidth = <8>;
+		debug = <0x7>;
+		rotate = <270>;
+		bgr;
+		pinctrl-names = "default";
+		pinctrl-0 = <&gpio4_pa4 &gpio4_pa2 &gpio1_pc6>;
+		led-gpios = <&gpio4 RK_PA4 GPIO_ACTIVE_HIGH>;//BL
+		dc-gpios = <&gpio4 RK_PA2 GPIO_ACTIVE_HIGH>;//DC
+		reset-gpios = <&gpio1 RK_PC6 GPIO_ACTIVE_LOW>;//RES
 	};
 };
 
@@ -138,7 +172,9 @@
 /**********UART**********/
 /* UART3_M1 */
 &uart3 {
-	status = "disabled";
+	status = "okay";
+	pinctrl-names = "default";
+	pinctrl-0 = <&uart3m1_xfer>;
 };
 
 /* UART4_M1 */

@@ -88,6 +88,12 @@ config FB_TFT_ILI9486
 	help
 	  Generic Framebuffer support for ILI9486
 
+config FB_TFT_ILI9488
+	tristate "FB driver for the ILI9488 LCD Controller"
+	depends on FB_TFT
+	help
+	  Generic Framebuffer support for ILI9488
+
 config FB_TFT_PCD8544
 	tristate "FB driver for the PCD8544 LCD Controller"
 	depends on FB_TFT
@@ -177,6 +183,12 @@ config FB_TFT_TINYLCD
 	help
 	  Custom Framebuffer support for tinylcd.com display
 
+config FB_TFT_ST7796
+	tristate "FB driver for ST7796 display"
+	depends on FB_TFT
+	help
+	  Custom Framebuffer support for ST7796 display
+
 config FB_TFT_TLS8204
 	tristate "FB driver for the TLS8204 LCD Controller"
 	depends on FB_TFT
@@ -206,3 +218,9 @@ config FB_TFT_WATTEROTT
 	depends on FB_TFT
 	help
 	  Generic Framebuffer support for WATTEROTT
+
+config FB_TFT_RM68140
+    tristate "FB driver for thr RM68140 LCD Controller"
+    depends on FB_TFT
+    help
+      Generic Framebuffer support for WATTEROTT the Raydium RM68140 display controller.

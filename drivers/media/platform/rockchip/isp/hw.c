@@ -1076,7 +1076,6 @@ static int rkisp_hw_probe(struct platform_device *pdev)
 	struct resource *res;
 	int i, ret, mult = 1;
 	bool is_mem_reserved = true;
-	u32 unite_state;
 	u32 clk_rate = 0;
 
 	match = of_match_node(rkisp_hw_of_match, node);
@@ -1147,11 +1146,6 @@ static int rkisp_hw_probe(struct platform_device *pdev)
 	hw_dev->isp_ver = match_data->isp_ver;
 	if (match_data->unite) {
 		hw_dev->unite = ISP_UNITE_TWO;
-	} else if (!device_property_read_u32(dev, "rockchip,unite", &unite_state)) {
-		if ( unite_state == 1 ) {
-			hw_dev->unite = ISP_UNITE_ONE;
-			hw_dev->base_next_addr = hw_dev->base_addr;
-		}
 	} else if (device_property_read_bool(dev, "rockchip,unite-en")) {
 		hw_dev->unite = ISP_UNITE_ONE;
 		hw_dev->base_next_addr = hw_dev->base_addr;
