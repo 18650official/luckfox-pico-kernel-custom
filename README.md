@@ -1,150 +1,46 @@
-# How do I submit patches to Android Common Kernels
+# 🦊 LuckFox Pico Custom Kernel & Toolchain
 
-1. BEST: Make all of your changes to upstream Linux. If appropriate, backport to the stable releases.
-   These patches will be merged automatically in the corresponding common kernels. If the patch is already
-   in upstream Linux, post a backport of the patch that conforms to the patch requirements below.
-   - Do not send patches upstream that contain only symbol exports. To be considered for upstream Linux,
-additions of `EXPORT_SYMBOL_GPL()` require an in-tree modular driver that uses the symbol -- so include
-the new driver or changes to an existing driver in the same patchset as the export.
-   - When sending patches upstream, the commit message must contain a clear case for why the patch
-is needed and beneficial to the community. Enabling out-of-tree drivers or functionality is not
-not a persuasive case.
+This repository contains a customized Linux kernel build specifically tailored for the **LuckFox Pico** development board. It integrates several key features and tools beyond the standard configuration to expand its capabilities for embedded projects.
 
-2. LESS GOOD: Develop your patches out-of-tree (from an upstream Linux point-of-view). Unless these are
-   fixing an Android-specific bug, these are very unlikely to be accepted unless they have been
-   coordinated with kernel-team@android.com. If you want to proceed, post a patch that conforms to the
-   patch requirements below.
+## ✨ Key Features & Enhancements
 
-# Common Kernel patch requirements
+This kernel branch (`custom_kernel_mods`) is built with the following main features enabled:
 
-- All patches must conform to the Linux kernel coding standards and pass `script/checkpatch.pl`
-- Patches shall not break gki_defconfig or allmodconfig builds for arm, arm64, x86, x86_64 architectures
-(see  https://source.android.com/setup/build/building-kernels)
-- If the patch is not merged from an upstream branch, the subject must be tagged with the type of patch:
-`UPSTREAM:`, `BACKPORT:`, `FROMGIT:`, `FROMLIST:`, or `ANDROID:`.
-- All patches must have a `Change-Id:` tag (see https://gerrit-review.googlesource.com/Documentation/user-changeid.html)
-- If an Android bug has been assigned, there must be a `Bug:` tag.
-- All patches must have a `Signed-off-by:` tag by the author and the submitter
+| Feature | Description | Benefit |
+| :--- | :--- | :--- |
+| **`uinput` Support** | The kernel module for creating virtual input devices is enabled. | Essential for simulating keyboard, mouse, or joystick input from user space applications. |
+| **ST7796 Display Driver** | Built-in support for the popular **ST7796** TFT LCD controller. | Enables direct, optimized screen output for integrated display projects. |
+| **ZRAM Compression** | Enabled kernel feature for compressed swap/RAM block devices. | Improves system responsiveness and memory efficiency on devices with limited RAM. |
+| **Extended Toolchain & `httpd`** | Includes a robust toolchain and key networking utilities like the **`httpd`** web server. | Provides a full environment for development and running web-based applications directly on the device. |
 
-Additional requirements are listed below based on patch type
+## 📦 Getting Started (Pre-compiled Images)
 
-## Requirements for backports from mainline Linux: `UPSTREAM:`, `BACKPORT:`
+For immediate deployment, you can skip the compilation process and flash a pre-built image directly.
 
-- If the patch is a cherry-pick from Linux mainline with no changes at all
-    - tag the patch subject with `UPSTREAM:`.
-    - add upstream commit information with a `(cherry picked from commit ...)` line
-    - Example:
-        - if the upstream commit message is
-```
-        important patch from upstream
+1.  **Download:** Navigate to the **[Releases]** tab of this repository.
+2.  **Select:** Download the latest pre-compiled kernel image archive (e.g., `.img` or `.tar.gz`).
+3.  **Flash:** Use the standard LuckFox flashing tools (such as `rkdeveloptool` or the proprietary flash tool) to write the downloaded image onto your LuckFox Pico's storage (SD card/NAND).
 
-        This is the detailed description of the important patch
+## 💻 Building from Source
 
-        Signed-off-by: Fred Jones <fred.jones@foo.org>
-```
->- then Joe Smith would upload the patch for the common kernel as
-```
-        UPSTREAM: important patch from upstream
+If you need to make further customizations or changes, follow these general steps to rebuild the kernel:
 
-        This is the detailed description of the important patch
+1.  **Clone the Repository:** Ensure you clone this repository using the SSH URL to avoid authentication issues.
+    ```bash
+    git clone git@github.com:18650official/luckfox-pico-kernel-custom.git
+    cd luckfox-pico-kernel-custom
+    git checkout custom_kernel_mods
+    ```
 
-        Signed-off-by: Fred Jones <fred.jones@foo.org>
+2.  **Toolchain Location:** This kernel is designed to be built using the toolchain located at:
+    ```
+    /home/miku/luckfox-pico/sysdrv/source/kernel/
+    ```
+    Ensure your build environment is correctly set up to use this path for cross-compilation.
 
-        Bug: 135791357
-        Change-Id: I4caaaa566ea080fa148c5e768bb1a0b6f7201c01
-        (cherry picked from commit c31e73121f4c1ec41143423ac6ce3ce6dafdcec1)
-        Signed-off-by: Joe Smith <joe.smith@foo.org>
-```
+3.  **Build:** *[Optional: Add your specific build commands here, e.g., `make luckfox_pico_defconfig && make -j$(nproc)`]*
 
-- If the patch requires any changes from the upstream version, tag the patch with `BACKPORT:`
-instead of `UPSTREAM:`.
-    - use the same tags as `UPSTREAM:`
-    - add comments about the changes under the `(cherry picked from commit ...)` line
-    - Example:
-```
-        BACKPORT: important patch from upstream
+## 📄 License
 
-        This is the detailed description of the important patch
-
-        Signed-off-by: Fred Jones <fred.jones@foo.org>
-
-        Bug: 135791357
-        Change-Id: I4caaaa566ea080fa148c5e768bb1a0b6f7201c01
-        (cherry picked from commit c31e73121f4c1ec41143423ac6ce3ce6dafdcec1)
-        [joe: Resolved minor conflict in drivers/foo/bar.c ]
-        Signed-off-by: Joe Smith <joe.smith@foo.org>
-```
-
-## Requirements for other backports: `FROMGIT:`, `FROMLIST:`,
-
-- If the patch has been merged into an upstream maintainer tree, but has not yet
-been merged into Linux mainline
-    - tag the patch subject with `FROMGIT:`
-    - add info on where the patch came from as `(cherry picked from commit <sha1> <repo> <branch>)`. This
-must be a stable maintainer branch (not rebased, so don't use `linux-next` for example).
-    - if changes were required, use `BACKPORT: FROMGIT:`
-    - Example:
-        - if the commit message in the maintainer tree is
-```
-        important patch from upstream
-
-        This is the detailed description of the important patch
-
-        Signed-off-by: Fred Jones <fred.jones@foo.org>
-```
->- then Joe Smith would upload the patch for the common kernel as
-```
-        FROMGIT: important patch from upstream
-
-        This is the detailed description of the important patch
-
-        Signed-off-by: Fred Jones <fred.jones@foo.org>
-
-        Bug: 135791357
-        (cherry picked from commit 878a2fd9de10b03d11d2f622250285c7e63deace
-         https://git.kernel.org/pub/scm/linux/kernel/git/foo/bar.git test-branch)
-        Change-Id: I4caaaa566ea080fa148c5e768bb1a0b6f7201c01
-        Signed-off-by: Joe Smith <joe.smith@foo.org>
-```
-
-
-- If the patch has been submitted to LKML, but not accepted into any maintainer tree
-    - tag the patch subject with `FROMLIST:`
-    - add a `Link:` tag with a link to the submittal on lore.kernel.org
-    - add a `Bug:` tag with the Android bug (required for patches not accepted into
-a maintainer tree)
-    - if changes were required, use `BACKPORT: FROMLIST:`
-    - Example:
-```
-        FROMLIST: important patch from upstream
-
-        This is the detailed description of the important patch
-
-        Signed-off-by: Fred Jones <fred.jones@foo.org>
-
-        Bug: 135791357
-        Link: https://lore.kernel.org/lkml/20190619171517.GA17557@someone.com/
-        Change-Id: I4caaaa566ea080fa148c5e768bb1a0b6f7201c01
-        Signed-off-by: Joe Smith <joe.smith@foo.org>
-```
-
-## Requirements for Android-specific patches: `ANDROID:`
-
-- If the patch is fixing a bug to Android-specific code
-    - tag the patch subject with `ANDROID:`
-    - add a `Fixes:` tag that cites the patch with the bug
-    - Example:
-```
-        ANDROID: fix android-specific bug in foobar.c
-
-        This is the detailed description of the important fix
-
-        Fixes: 1234abcd2468 ("foobar: add cool feature")
-        Change-Id: I4caaaa566ea080fa148c5e768bb1a0b6f7201c01
-        Signed-off-by: Joe Smith <joe.smith@foo.org>
-```
-
-- If the patch is a new feature
-    - tag the patch subject with `ANDROID:`
-    - add a `Bug:` tag with the Android bug (required for android-specific features)
+This kernel repository is based on the original LuckFox SDK and is distributed under the [Insert License Here, e.g., GPL-2.0].
 
