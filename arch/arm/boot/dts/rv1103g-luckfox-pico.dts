@@ -23,6 +23,7 @@
 	};
 
 	gpio4pa3: gpio4pa3 {
+		status = "disabled";
 		compatible = "regulator-fixed";
 		pinctrl-names = "default";
 		pinctrl-0 = <&gpio4_pa3>;
@@ -61,6 +62,10 @@
 		pinctrl-0 = <&gpio4_pb1>;
 		regulator-name = "gpio4_pb1";
 		regulator-always-on;
+	};
+
+	adc-keys {
+		status = "disabled";
 	};
 };
 
@@ -139,6 +144,13 @@
     };
 };
 
+/*PWM for Buzzer*/
+/**********PWM**********/
+/* PWM1_M0 */
+&pwm1 {
+    status = "okay";
+};
+
 &spi0 {
 	status = "okay";
 	pinctrl-names = "default";
@@ -152,20 +164,25 @@
 		fps = <30>;
 		buswidth = <8>;
 		debug = <0x7>;
-		rotate = <270>;
+		rotate = <180>;
 		bgr;
 		pinctrl-names = "default";
-		pinctrl-0 = <&gpio4_pa4 &gpio4_pa2 &gpio1_pc6>;
-		led-gpios = <&gpio4 RK_PA4 GPIO_ACTIVE_HIGH>;//BL
-		dc-gpios = <&gpio4 RK_PA2 GPIO_ACTIVE_HIGH>;//DC
-		reset-gpios = <&gpio1 RK_PC6 GPIO_ACTIVE_LOW>;//RES
+		pinctrl-0 = <&gpio4_pa4 &gpio4_pa3 &gpio4_pa2>; 
+		/* led-gpios = <&gpio4 RK_PA4 GPIO_ACTIVE_HIGH>; //BL */ 
+		dc-gpios = <&gpio4 RK_PA3 GPIO_ACTIVE_HIGH>; //DC
+		reset-gpios = <&gpio4 RK_PA2 GPIO_ACTIVE_LOW>; //RES
 	};
+};
+
+/**********RTC**********/
+&rtc {
+	status = "okay";
 };
 
 /**********I2C**********/
 /* I2C3_M1 */
 &i2c3 {
-	status = "disabled";
+	status = "okay";
 	clock-frequency = <100000>;
 };
 
@@ -182,12 +199,8 @@
 	status = "disabled";
 };
 
-/**********PWM**********/
-/* PWM1_M0 */
-&pwm1 {
-	status = "disabled";
+/*****ADC*****/
+&saradc {
+	status = "okay";
+	vref-supply = <&vcc_3v3>;
 };
-
-
-
-
