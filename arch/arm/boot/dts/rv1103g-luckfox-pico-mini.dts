@@ -12,6 +12,50 @@
 / {
 	model = "Luckfox Pico Mini";
 	compatible = "rockchip,rv1103g-38x38-ipc-v10", "rockchip,rv1103";
+
+	adc-keys {
+		status = "disabled";
+	};
+
+	dht11_sensor {
+        status = "disabled";
+    };
+};
+
+&pinctrl {
+    gpio {
+        /******** LCD Controller ********/
+        /* GPIO1_B2 */
+        gpio1_pb2: gpio1-pb2 {
+            rockchip,pins = <1 RK_PB2 RK_FUNC_GPIO &pcfg_pull_none>;
+        };
+
+        /* GPIO1_B3 */
+        gpio1_pb3: gpio1-pb3 {
+            rockchip,pins = <1 RK_PB3 RK_FUNC_GPIO &pcfg_pull_none>;
+        };
+
+        /* GPIO1_C4 */
+        gpio1_pc4: gpio1-pc4 {
+            rockchip,pins = <1 RK_PC4 RK_FUNC_GPIO &pcfg_pull_none>;
+        };
+
+		/******** DS1302 ********/
+        /* GPIO4_C1  CLK */
+        gpio4_pc1: gpio4-pc1 {
+            rockchip,pins = <4 RK_PC1 RK_FUNC_GPIO &pcfg_pull_none>;
+        };
+
+        /* GPIO4_C0  DIN */
+        gpio4_pc0: gpio4-pc0 {
+            rockchip,pins = <4 RK_PC0 RK_FUNC_GPIO &pcfg_pull_none>;
+        };
+
+		/* GPIO0_A4  RST */
+		gpio0_pa4: gpio0-pa4 {
+            rockchip,pins = <0 RK_PA4 RK_FUNC_GPIO &pcfg_pull_none>;
+        };
+    };
 };
 
 /**********SFC**********/
@@ -54,29 +98,78 @@
 /**********USB**********/
 &usbdrd_dwc3 {
 	status = "okay";
-	dr_mode = "peripheral";
+	dr_mode = "otg";
 };
 
 /**********SPI**********/
 /* SPI0_M0 */
+&pinctrl {
+    spi0 {
+        /omit-if-no-ref/
+        spi0m0_pins: spi0m0-pins {
+            rockchip,pins =
+                /* spi0_clk_m0 */
+                <1 RK_PC1 4 &pcfg_pull_none>,
+                /* spie_miso_m0 */
+                <1 RK_PC3 6 &pcfg_pull_none>,
+                /* spi_mosi_m0 */
+                <1 RK_PC2 6 &pcfg_pull_none>;
+        };
+    };
+};
+
+/**********FBDEV**********/
 &spi0 {
-	status = "disabled";
-	spidev@0 {
-		spi-max-frequency = <50000000>;
+	status = "okay";
+	pinctrl-names = "default";
+	pinctrl-0 = <&spi0m0_cs0 &spi0m0_pins>;
+
+	fbtft:fbtft@0 {
+		status = "okay";
+		compatible = "sitronix,st7789v";
+		reg = <0>;
+		spi-max-frequency = <40000000>;
+		fps = <60>;
+		buswidth = <8>;
+		debug = <0x7>;
+		rotate = <90>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&gpio1_pc4 &gpio1_pb2 &gpio1_pb3>; 
+		/* led-gpios = <&gpio1 RK_PC4 GPIO_ACTIVE_HIGH>; */ //BL Disabled 
+		dc-gpios = <&gpio1 RK_PB2 GPIO_ACTIVE_HIGH>; //DC
+		reset-gpios = <&gpio1 RK_PB3 GPIO_ACTIVE_LOW>; //RES
 	};
+};
+
+/**********RTC**********/
+&rtc {
+	status = "disabled";
 };
 
 /**********I2C**********/
 /* I2C3_M1 */
 &i2c3 {
-	status = "disabled";
+	status = "okay";
 	clock-frequency = <100000>;
 };
+
+/**********PWM**********/
+/* PWM1_M0*/
+&pwm1 {
+	status = "okay";
+};
+
+/* PWM9_M1 */
+&pwm9{
+	status = "okay";
+	pinctrl-0 = <&pwm9m1_pins>;
+};
+
 
 /**********UART**********/
 /* UART3_M1 */
 &uart3 {
-	status = "disabled";
+	status = "okay";
 };
 
 /* UART4_M1 */
@@ -84,8 +177,13 @@
 	status = "disabled";
 };
 
-/**********PWM**********/
-/* PWM1_M0 */
-&pwm1 {
+/* UART2_M1 => Multi-feature to LCDC */
+&uart2 {
 	status = "disabled";
+};
+
+/**********ADC**********/
+&saradc {
+	status = "okay";
+	vref-supply = <&vcc_3v3>;
 };

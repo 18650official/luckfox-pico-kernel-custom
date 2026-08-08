@@ -126,6 +126,7 @@ struct fbtft_display {
  * @gpios: Pointer to an array of pinname to gpio mappings
  * @rotate: Display rotation angle
  * @bgr: LCD Controller BGR bit
+ * @inverse: Control the ST7789v series' inversion and GAMMA
  * @fps: Frames per second (this will go away, use @fps in @fbtft_display)
  * @txbuflen: Size of transmit buffer
  * @startbyte: When set, enables use of Startbyte in transfers
@@ -136,6 +137,7 @@ struct fbtft_platform_data {
 	struct fbtft_display display;
 	unsigned int rotate;
 	bool bgr;
+	bool inverse;
 	unsigned int fps;
 	int txbuflen;
 	u8 startbyte;
@@ -227,6 +229,7 @@ struct fbtft_par {
 	bool first_update_done;
 	ktime_t update_time;
 	bool bgr;
+	bool inverse;
 	void *extra;
 	bool polarity;
 };

@@ -141,8 +141,10 @@ static int init_display(struct fbtft_par *par)
 
 	write_reg(par, MIPI_DCS_SET_DISPLAY_ON);
 
-	if (HSD20_IPS)
+	if(par->inverse == true)
 		write_reg(par, MIPI_DCS_ENTER_INVERT_MODE);
+	else
+		write_reg(par, MIPI_DCS_EXIT_INVERT_MODE); // 0x20
 
 	return 0;
 }
